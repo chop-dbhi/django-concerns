@@ -116,7 +116,7 @@ This example assumes [Bootstrap 2.3.2](http://getbootstrap.com/2.3.2/) is being 
 
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal">Cancel</button>
-        <button data-submit="modal" data-url="/concerns/report/" class="btn btn-primary">Submit Concern</button>
+        <button data-submit="modal" data-action="/concerns/report/" class="btn btn-primary">Submit Concern</button>
     </div>
 </div>
 ```
@@ -124,7 +124,7 @@ This example assumes [Bootstrap 2.3.2](http://getbootstrap.com/2.3.2/) is being 
 **Anchor/button to open the modal**
 
 ```html
-<a id="report-concern-toggle" href="#report-concern-modal" role="button" class="btn" data-toggle="modal">Report Concern</a>
+<a id="report-concern-toggle" href="#report-concern-modal" data-toggle="modal"><i class="icon-warning-sign text-warning"></i> Report Concern</a>
 ```
 
 
@@ -132,16 +132,17 @@ This example assumes [Bootstrap 2.3.2](http://getbootstrap.com/2.3.2/) is being 
 
 ```javascript
 // Various elements of interest
-var concernButton = $('#report-concern-toggle'),
+var concernToggle = $('#report-concern-toggle'),
     concernModal = $('#report-concern-modal'),
     concernComment = concernModal.find('textarea'),
     concernSubmit = concernModal.find('[data-submit]');
 
 // In the unlikely event the POST fails, show a fallback message containing
 // and email address the user can contact directly.
-var fallbackMessage = '<p class="text-error">Unfortunately the submission \
-    failed. Please contact us at <a href="mailto:foo@example.com">foo@example.com</a> \
-    with as much detail as you can about the nature of the concern. Thank you.</p>'
+var fallbackMessage = '<p class="text-error">Unfortunately the submission ' +
+    'failed. Please contact us at <a href="mailto:foo@example.com">' +
+    'foo@example.com</a> with as much detail as you can about the nature of ' +
+    'the concern. Thank you.</p>';
 
 // Bind to click event of the submission button
 concernSubmit.on('click', function(event) {
@@ -150,27 +151,27 @@ concernSubmit.on('click', function(event) {
     concernModal.modal('hide');
 
     var data = $.param({
-        document: $.freeze(),
-        comment: concernComment.val(),
+        'document': $.freeze(),
+        'comment': concernComment.val()
     });
 
     $.ajax({
         type: 'POST',
         data: data,
-        url: concernSubmit.data('url'),
+        url: concernSubmit.data('action'),
         success: function(resp) {
-            // Clear comment box, temporarily show 'thank you' message on button
+            // Clear comment box, temporarily show 'thank you' message on toggle
             concernComment.val('');
 
-            var buttonText = concernButton.text();
-            concernButton.addClass('btn-success').text('Submitted. Thank You!')
+            var toggleHtml = concernToggle.html();
+            concernToggle.html('<i class="icon-thumbs-up text-success"></i> Submitted. Thank You!');
             setTimeout(function() {
-                concernButton.removeClass('btn-success').text(buttonText);
+                concernToggle.html(toggleHtml);
             }, 3000);
         },
         error: function(xhr, code, error) {
             // Re-open modal with fallback message
-            concernModal.modal('open');
+            concernModal.modal('show');
             concernComment.before(fallbackMessage);
         }
     });
