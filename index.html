@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Django-concerns by cbmi</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Django-concerns</h1>
+        <h2>Django app for reporting privacy concerns</h2>
+        <a href="https://github.com/cbmi/django-concerns" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="django-concerns" class="anchor" href="#django-concerns"><span class="octicon octicon-link"></span></a>django-concerns</h1>
+
+<p>A good use of thiapp was in a web app containing de-identifed patient information</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<div class="highlight"><pre>pip install django-concerns
+</pre></div>
+
+<h2>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
+
+<p>Add <code>concerns</code> to <code>INSTALLED_APPS</code> along with the following Django contrib apps:</p>
+
+<div class="highlight"><pre><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">'django.contrib.auth'</span><span class="p">,</span>
+    <span class="s">'django.contrib.contenttypes'</span><span class="p">,</span>
+    <span class="s">'django.contrib.sessions'</span><span class="p">,</span>
+    <span class="s">'django.contrib.sites'</span><span class="p">,</span>
+    <span class="s">'concerns'</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>At a minimum, the following middleware must be installed:</p>
+
+<div class="highlight"><pre><span class="n">MIDDLEWARE_CLASSES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">'django.middleware.common.CommonMiddleware'</span><span class="p">,</span>
+    <span class="s">'django.contrib.sessions.middleware.SessionMiddleware'</span><span class="p">,</span>
+    <span class="s">'django.contrib.auth.middleware.AuthenticationMiddleware'</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>Include the <code>concerns.urls</code> in the the <code>ROOT_URLCONF</code>:</p>
+
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.conf.urls</span> <span class="kn">import</span> <span class="n">url</span><span class="p">,</span> <span class="n">patterns</span><span class="p">,</span> <span class="n">include</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">''</span><span class="p">,</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r'^concerns/'</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">'concerns.urls'</span><span class="p">)),</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</pre></div>
+
+<h2>
+<a name="settings" class="anchor" href="#settings"><span class="octicon octicon-link"></span></a>Settings</h2>
+
+<ul>
+<li>
+<code>CONCERN_EMAIL_SUBJECT</code> - The subject-line of the email sent to managers. Defaults to <code>Concern Report for {site}</code> where <code>{site}</code> is a string formatting variable for the current site's name, e.g. <code>Concern Report for example.com</code>
+</li>
+<li>
+<code>CONCERN_RESOLVERS</code> - A list or tuple with the same structure as <code>ADMINS</code> and <code>MANAGERS</code> of users who should receive an email when a concern is reported.</li>
+<li>
+<code>CONCERN_STATUSES</code> - A list of statuses that a reported concern could be in during review. The first status in the list is used as the default for new concerns. Default are <code>New</code>, <code>In Review</code>, <code>Duplicate</code>, and <code>Closed</code>.</li>
+</ul><h2>
+<a name="templates" class="anchor" href="#templates"><span class="octicon octicon-link"></span></a>Templates</h2>
+
+<p>The templates that come with the django-concerns are functional, but <em>very</em> minimal:</p>
+
+<ul>
+<li>
+<code>concerns/concern_list.html</code> - Renders a list of concerns with links to their detail pages
+
+<ul>
+<li>Context received:
+
+<ul>
+<li>
+<code>concerns</code> - <code>Concern</code> queryset</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<code>concerns/concern_detail.html</code>
+
+<ul>
+<li>Context received:
+
+<ul>
+<li>
+<code>concern</code> - <code>Concern</code> instance</li>
+<li>
+<code>form</code> - Minimal form for resolving the concern.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<code>concerns/report_concern.html</code>
+
+<ul>
+<li>Context recieved:
+
+<ul>
+<li>
+<code>form</code> - Minimal form for reporting a concern.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p>An email template is also provided and can be customized as well:</p>
+
+<ul>
+<li>
+<code>concerns/concern_email.txt</code>
+
+<ul>
+<li>Context recieved:
+
+<ul>
+<li>
+<code>protocol</code> - The site's protocol, either <code>http</code> or <code>https</code> for constructing the permalink to the concern detail page.</li>
+<li>
+<code>site</code> - The <code>site</code> object which contains the domain for constructing the permalink.</li>
+<li>
+<code>concern</code> - The <code>concern</code> instance itself for including details about the concern or getting the absolute URL.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>The recommended way for exposing a "report a concern" form in your application is having button that opens an in-page modal/dialog for filling out details of the concern. Most likely the concern they have is about something on the page they are currently viewing, so directing them to a separate page to fill out the form is not generally a good idea since they will lose the exact state of the page (in case it is not static).</p>
+
+<p>The <code>Concern</code> model has a field <code>document</code> that is used for storing the HTML captured at the time of the concern was reported. JavaScript can be used to capture the HTML in the current state. We recommend using <a href="http://cbmi.github.io/jquery.freeze/">jquery.freeze</a> which makes it trivial to <em>freeze</em> the current state of the DOM. Note that if a modal is used, it should be hidden prior to freeze the DOM, otherwise the modal will visible in the HTML when the concern is reported.</p>
+
+<div class="highlight"><pre><span class="c1">// Bind to button or listen for a event, freeze the dom and send</span>
+<span class="c1">// a POST to log the document. The server-side could write the data</span>
+<span class="c1">// to an HTML file for later viewing.</span>
+<span class="nx">$</span><span class="p">(</span><span class="s1">'#freezer'</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">'/screenlog/'</span><span class="p">,</span> <span class="nx">$</span><span class="p">.</span><span class="nx">param</span><span class="p">({</span><span class="nb">document</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">freeze</span><span class="p">()}));</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="example-bootstraps-modal" class="anchor" href="#example-bootstraps-modal"><span class="octicon octicon-link"></span></a>Example: Bootstrap's Modal</h3>
+
+<p>This example assumes <a href="http://getbootstrap.com/2.3.2/">Bootstrap 2.3.2</a> is being used (version 3 requires minor changes) as well as jquery.freeze.js (recommended above).</p>
+
+<p><strong>Modal HTML markup</strong></p>
+
+<div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"report-concern-modal"</span> <span class="na">class=</span><span class="s">"modal hide"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"modal-header"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"close"</span> <span class="na">data-dismiss=</span><span class="s">"modal"</span> <span class="na">aria-hidden=</span><span class="s">"true"</span><span class="nt">&gt;</span><span class="ni">&amp;times;</span><span class="nt">&lt;/button&gt;</span>
+        <span class="nt">&lt;h3&gt;</span>Report Concern<span class="nt">&lt;/h3&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"modal-body"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;p&gt;</span>When you click "Submit Concern", a copy of this Web page will be sent to the administrators. Please provide any additional details regarding the concern we might not be able to see on the page.<span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;textarea</span> <span class="na">class=</span><span class="s">"input-block-level"</span> <span class="na">rows=</span><span class="s">"4"</span> <span class="na">placeholder=</span><span class="s">"Please describe the nature of the concern (optional)"</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"modal-footer"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">"btn"</span> <span class="na">data-dismiss=</span><span class="s">"modal"</span><span class="nt">&gt;</span>Cancel<span class="nt">&lt;/button&gt;</span>
+        <span class="nt">&lt;button</span> <span class="na">data-submit=</span><span class="s">"modal"</span> <span class="na">data-url=</span><span class="s">"/concerns/report/"</span> <span class="na">class=</span><span class="s">"btn btn-primary"</span><span class="nt">&gt;</span>Submit Concern<span class="nt">&lt;/button&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+<p><strong>Anchor/button to open the modal</strong></p>
+
+<div class="highlight"><pre><span class="nt">&lt;a</span> <span class="na">id=</span><span class="s">"report-concern-toggle"</span> <span class="na">href=</span><span class="s">"#report-concern-modal"</span> <span class="na">role=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn"</span> <span class="na">data-toggle=</span><span class="s">"modal"</span><span class="nt">&gt;</span>Report Concern<span class="nt">&lt;/a&gt;</span>
+</pre></div>
+
+<p><strong>JavaScript containing the submission logic</strong></p>
+
+<div class="highlight"><pre><span class="c1">// Various elements of interest</span>
+<span class="kd">var</span> <span class="nx">concernButton</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#report-concern-toggle'</span><span class="p">),</span>
+    <span class="nx">concernModal</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#report-concern-modal'</span><span class="p">),</span>
+    <span class="nx">concernComment</span> <span class="o">=</span> <span class="nx">concernModal</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">'textarea'</span><span class="p">),</span>
+    <span class="nx">concernSubmit</span> <span class="o">=</span> <span class="nx">concernModal</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">'[data-submit]'</span><span class="p">);</span>
+
+<span class="c1">// In the unlikely event the POST fails, show a fallback message containing</span>
+<span class="c1">// and email address the user can contact directly.</span>
+<span class="kd">var</span> <span class="nx">fallbackMessage</span> <span class="o">=</span> <span class="s1">'&lt;p class="text-error"&gt;Unfortunately the submission \</span>
+<span class="s1">    failed. Please contact us at &lt;a href="mailto:foo@example.com"&gt;foo@example.com&lt;/a&gt; \</span>
+<span class="s1">    with as much detail as you can about the nature of the concern. Thank you.&lt;/p&gt;'</span>
+
+<span class="c1">// Bind to click event of the submission button</span>
+<span class="nx">concernSubmit</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="c1">// Hide the modal before freezing the DOM</span>
+    <span class="nx">concernModal</span><span class="p">.</span><span class="nx">modal</span><span class="p">(</span><span class="s1">'hide'</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">param</span><span class="p">({</span>
+        <span class="nb">document</span><span class="o">:</span> <span class="nx">$</span><span class="p">.</span><span class="nx">freeze</span><span class="p">(),</span>
+        <span class="nx">comment</span><span class="o">:</span> <span class="nx">concernComment</span><span class="p">.</span><span class="nx">val</span><span class="p">(),</span>
+    <span class="p">});</span>
+
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="nx">type</span><span class="o">:</span> <span class="s1">'POST'</span><span class="p">,</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="nx">concernSubmit</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">'url'</span><span class="p">),</span>
+        <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Clear comment box, temporarily show 'thank you' message on button</span>
+            <span class="nx">concernComment</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+
+            <span class="kd">var</span> <span class="nx">buttonText</span> <span class="o">=</span> <span class="nx">concernButton</span><span class="p">.</span><span class="nx">text</span><span class="p">();</span>
+            <span class="nx">concernButton</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">'btn-success'</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="s1">'Submitted. Thank You!'</span><span class="p">)</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">concernButton</span><span class="p">.</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">'btn-success'</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">buttonText</span><span class="p">);</span>
+            <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+        <span class="p">},</span>
+        <span class="nx">error</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">code</span><span class="p">,</span> <span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// Re-open modal with fallback message</span>
+            <span class="nx">concernModal</span><span class="p">.</span><span class="nx">modal</span><span class="p">(</span><span class="s1">'open'</span><span class="p">);</span>
+            <span class="nx">concernComment</span><span class="p">.</span><span class="nx">before</span><span class="p">(</span><span class="nx">fallbackMessage</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/cbmi/django-concerns/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/cbmi/django-concerns/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/cbmi/django-concerns"></a> is maintained by <a href="https://github.com/cbmi">cbmi</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
