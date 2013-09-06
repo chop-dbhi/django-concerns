@@ -1,7 +1,9 @@
 # django-concerns
 
-A good use of thiapp was in a web app containing de-identifed patient information
+[![Build Status](https://travis-ci.org/cbmi/django-concerns.png?branch=master)](https://travis-ci.org/cbmi/django-concerns)
+[![Coverage Status](https://coveralls.io/repos/cbmi/django-concerns/badge.png?branch=master)](https://coveralls.io/r/cbmi/django-concerns?branch=master)
 
+Provides facilities for reporting and resolving _concerns_. The origin of this app was for reporting privacy concerns in applications with de-identified patient data. In general de-identification is an art, not a science, so it is possible for leaks to occur. This facilities in this app provided a simple way to report, review, and resolve concerns as they come up.
 
 ## Install
 
