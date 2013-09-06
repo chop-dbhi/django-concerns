@@ -1,0 +1,6 @@
+include LICENSE
+include README.md
+global-exclude .DS_Store
+graft concerns/templates
+prune tests
+exclude test_suite.py

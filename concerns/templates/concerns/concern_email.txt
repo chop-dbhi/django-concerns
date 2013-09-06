@@ -1,0 +1,3 @@
+A privacy concern has been reported. View it here:
+
+{{ protocol }}://{{ site.domain }}{{ concern.get_absolute_url }}

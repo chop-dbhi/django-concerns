@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{{ concern }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <div class="concern-metadata">
+            <p>
+                {% if concern.reporter %}
+                    Reported by {{ concern.reporter.get_full_name }}
+                {% else %}
+                    Reported anonymously
+                {% endif %}
+                <span style="color: #999"> @ {{ concern.ip|default_if_none:"(unknown IP)" }} on {{ concern.created|date }} at {{ concern.created|time }}</span>
+            </p>
+            {% if concern.comment %}
+                <blockquote>{{ concern.comment }}</blockquote>
+            {% endif %}
+            {% if concern.headers %}
+                <pre>{{ concern.headers }}</pre>
+            {% endif %}
+        </div>
+        <hr>
+        <frame>{{ concern.document|safe }}</frame>
+    </body>
+</html>

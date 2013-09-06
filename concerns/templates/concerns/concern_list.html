@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Concerns</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        {% if concerns %}
+            <ul>
+                {% for concern in concerns %}
+                    <li><a href="{{ concern.get_absolute_url }}">{{ concern }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No concerns have been reported.</p>
+        {% endif %}
+    </body>
+</html>
